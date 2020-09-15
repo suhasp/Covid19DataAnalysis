@@ -143,7 +143,21 @@ def calc_doubling_rate(df_input,filter_on='confirmed'):
 
 
     return df_output
+def features_generator():
+    pd_JH_data=pd.read_csv('../../data/processed/COVID_relational_confirmed.csv', sep=';', parse_dates=[0])
+    pd_JH_data=pd_JH_data.sort_values('date',ascending=True).copy()
 
+    #test_structure=pd_JH_data[((pd_JH_data['country']=='US')|
+    #                  (pd_JH_data['country']=='Germany'))]
+
+    pd_result_larg=calc_filtered_data(pd_JH_data)
+    pd_result_larg=calc_doubling_rate(pd_result_larg)
+    pd_result_larg=calc_doubling_rate(pd_result_larg,'confirmed_filtered')
+
+
+    mask=pd_result_larg['confirmed']>100
+    pd_result_larg['confirmed_filtered_DR']=pd_result_larg['confirmed_filtered_DR'].where(mask, other=np.NaN)
+    pd_result_larg.to_csv('../../data/processed/COVID_final_set.csv',sep=';',index=False)
 
 if __name__ == '__main__':
     test_data_reg=np.array([2,4,6])

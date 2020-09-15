@@ -14,12 +14,22 @@ def get_johns_hopkins():
     ''' Get data by a git pull request, the source code has to be pulled first
         Result is stored in the predifined csv structure
     '''
-    git_pull = subprocess.Popen( "/usr/bin/git pull" ,
-                         cwd = os.path.dirname( 'data/raw/COVID-19/' ),
-                         shell = True,
-                         stdout = subprocess.PIPE,
-                         stderr = subprocess.PIPE )
-    (out, error) = git_pull.communicate()
+    if os.path.exists('../../data/raw/COVID-19/'):
+        print('Repository already cloned: Pull the latest data from repository')
+        git_pull = subprocess.Popen("git pull",
+                                    cwd=os.path.dirname('../../data/raw/COVID-19/'),
+                                    shell=True,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+        (out, error) = git_pull.communicate()
+    else:
+        print('Repository unavailable. cloning the repository...')
+        git_clone = subprocess.Popen("git clone https://github.com/CSSEGISandData/COVID-19.git",
+                                     cwd=os.path.dirname('../../data/raw/'),
+                                     shell=True,
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE)
+        (out, error) = git_clone.communicate()
 
 
     print("Error : " + str(error))
